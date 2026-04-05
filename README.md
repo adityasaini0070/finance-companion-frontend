@@ -1,97 +1,134 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# 💰 Personal Finance Companion
 
-# Getting Started
+A full-stack mobile app to track income, expenses, set savings goals, and receive AI-powered financial insights.
 
-> **Note**: Make sure you have completed the [Set Up Your Environment](https://reactnative.dev/docs/set-up-your-environment) guide before proceeding.
+---
 
-## Step 1: Start Metro
+## Tech Stack
 
-First, you will need to run **Metro**, the JavaScript build tool for React Native.
+| Layer | Technology |
+|---|---|
+| Frontend | React Native (CLI) |
+| Backend | Java Spring Boot 3 |
+| Database | MongoDB |
+| AI | Google Gemini 2.0 Flash |
+| Navigation | React Navigation v6 |
+| HTTP Client | Axios |
+| Charts | react-native-chart-kit |
 
-To start the Metro dev server, run the following command from the root of your React Native project:
+---
 
-```sh
-# Using npm
-npm start
+## Features
 
-# OR using Yarn
-yarn start
+- **Home Dashboard** — real-time balance, income/expense summary cards, 7-day line chart, recent transactions
+- **Transactions** — full CRUD, search by keyword, filter by type and category, net total display
+- **Add/Edit Transaction** — type toggle, amount input, category grid with icons, date picker, form validation
+- **Goals** — monthly savings goals with progress bars, ACHIEVED / ON_TRACK / AT_RISK status badges
+- **AI Insights** — Gemini-powered personalised financial tip, category pie chart, weekly bar chart, savings rate tracker
+
+---
+
+## Project Structure
+
+```
+├── FinanceApp/                  # React Native frontend
+│   └── src/
+│       ├── api/                 # Axios config + all API calls
+│       ├── screens/             # 5 screens
+│       ├── components/          # Reusable UI components
+│       ├── navigation/          # Bottom tabs + stack navigator
+│       └── theme/               # Colors and category config
+│
+└── financeapp-backend/          # Spring Boot backend
+    └── src/main/java/com/example/financeapp/
+        ├── Models/
+        ├── Repositories/
+        ├── Services/
+        └── Controllers/         # REST + InsightController (Gemini)
 ```
 
-## Step 2: Build and run your app
+---
 
-With Metro running, open a new terminal window/pane from the root of your React Native project, and use one of the following commands to build and run your Android or iOS app:
+## API Endpoints
 
-### Android
+| Method | Endpoint | Description |
+|---|---|---|
+| GET/POST/PUT/DELETE | `/api/transactions` | CRUD transactions |
+| GET | `/api/transactions/summary` | Balance, income, expenses |
+| GET | `/api/transactions/filter/type/{type}` | Filter by INCOME/EXPENSE |
+| GET | `/api/transactions/filter/category/{cat}` | Filter by category |
+| GET | `/api/transactions/search?keyword=` | Search transactions |
+| GET/POST/PUT/DELETE | `/api/goals` | CRUD goals |
+| PUT | `/api/goals/{id}/refresh` | Recalculate goal progress |
+| GET | `/api/insights/ai` | Gemini AI financial tip |
 
-```sh
-# Using npm
-npm run android
+---
 
-# OR using Yarn
-yarn android
+## Getting Started
+
+### Prerequisites
+- Node.js 18+
+- JDK 17+
+- MongoDB running locally
+- Android Studio with an emulator
+- Google Gemini API key — free at https://aistudio.google.com/app/apikey
+
+### Backend Setup
+```bash
+cd financeapp-backend
+# Add your keys to src/main/resources/application.properties:
+# spring.data.mongodb.uri=mongodb://localhost:27017/financedb
+# gemini.api.key=YOUR_KEY_HERE
+# server.port=8084
+
+./mvnw spring-boot:run
 ```
 
-### iOS
+### Frontend Setup
+```bash
+cd FinanceApp
+npm install
 
-For iOS, remember to install CocoaPods dependencies (this only needs to be run on first clone or after updating native deps).
+# Update BASE_URL in src/api/axiosConfig.js to point to your backend
+# For emulator with adb reverse: http://localhost:8084/api
 
-The first time you create a new project, run the Ruby bundler to install CocoaPods itself:
-
-```sh
-bundle install
+npx react-native run-android
 ```
 
-Then, and every time you update your native dependencies, run:
-
-```sh
-bundle exec pod install
+### adb reverse (required for emulator)
+```bash
+adb reverse tcp:8084 tcp:8084
+adb reverse tcp:8081 tcp:8081
 ```
 
-For more information, please visit [CocoaPods Getting Started guide](https://guides.cocoapods.org/using/getting-started.html).
+---
 
-```sh
-# Using npm
-npm run ios
+## Goal Status Logic
 
-# OR using Yarn
-yarn ios
-```
+| Status | Condition |
+|---|---|
+| ACHIEVED | Progress ≥ 100% |
+| ON_TRACK | Progress ≥ 50% |
+| AT_RISK | Progress < 50% |
 
-If everything is set up correctly, you should see your new app running in the Android Emulator, iOS Simulator, or your connected device.
+`currentSaved = totalIncome - totalExpenses` scoped to the goal's month and year.
 
-This is one way to run your app — you can also build it directly from Android Studio or Xcode.
+---
 
-## Step 3: Modify your app
+## Technical Decisions
 
-Now that you have successfully run the app, let's make changes!
+- **React Native CLI over Expo** — full native access needed for vector icons font linking and APK generation control
+- **Axios with interceptors** — centralised API layer with logging and error normalisation
+- **Direct Gemini REST calls** — used `RestTemplate` over Spring AI starter to avoid pre-release dependency issues. Prompt includes calculated summary (totals, savings rate, top category) for more actionable responses
+- **MongoDB** — schema-flexible document storage suits evolving finance data models
+- **NativeStack navigator** — used `@react-navigation/native-stack` over the JS stack for better performance and no gesture handler dependency issues
 
-Open `App.tsx` in your text editor of choice and make some changes. When you save, your app will automatically update and reflect these changes — this is powered by [Fast Refresh](https://reactnative.dev/docs/fast-refresh).
+---
 
-When you want to forcefully reload, for example to reset the state of your app, you can perform a full reload:
+## Environment Variables
 
-- **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Dev Menu**, accessed via <kbd>Ctrl</kbd> + <kbd>M</kbd> (Windows/Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (macOS).
-- **iOS**: Press <kbd>R</kbd> in iOS Simulator.
-
-## Congratulations! :tada:
-
-You've successfully run and modified your React Native App. :partying_face:
-
-### Now what?
-
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [docs](https://reactnative.dev/docs/getting-started).
-
-# Troubleshooting
-
-If you're having issues getting the above steps to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
-
-# Learn More
-
-To learn more about React Native, take a look at the following resources:
-
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+| Variable | Location | Description |
+|---|---|---|
+| `gemini.api.key` | `application.properties` | Google Gemini API key |
+| `spring.data.mongodb.uri` | `application.properties` | MongoDB connection string |
+| `BASE_URL` | `src/api/axiosConfig.js` | Backend URL |
