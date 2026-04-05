@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unstable-nested-components */
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -23,10 +24,10 @@ function TransactionStack() {
 }
 
 const TAB_ICONS = {
-  Home:         ['home',        'home-outline'],
-  Transactions: ['wallet',      'wallet-outline'],
-  Goals:        ['trophy',      'trophy-outline'],
-  Insights:     ['bulb',        'bulb-outline'],
+  Home: ['home', 'home-outline'],
+  Transactions: ['wallet', 'wallet-outline'],
+  Goals: ['trophy', 'trophy-outline'],
+  Insights: ['bulb', 'bulb-outline'],
 };
 
 export default function AppNavigator() {
