@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 import React, { useState, useCallback } from 'react';
 import {
   View, Text, StyleSheet, ScrollView,
@@ -38,12 +39,12 @@ function buildChart(transactions) {
 }
 
 export default function HomeScreen({ navigation }) {
-  const [summary, setSummary]           = useState({ balance: 0, totalIncome: 0, totalExpenses: 0 });
-  const [recent, setRecent]             = useState([]);
-  const [chartData, setChartData]       = useState(null);
-  const [loading, setLoading]           = useState(true);
-  const [refreshing, setRefreshing]     = useState(false);
-  const [error, setError]               = useState(null);
+  const [summary, setSummary] = useState({ balance: 0, totalIncome: 0, totalExpenses: 0 });
+  const [recent, setRecent] = useState([]);
+  const [chartData, setChartData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+  const [error, setError] = useState(null);
 
   const fetchAll = async () => {
     try {
@@ -120,8 +121,8 @@ export default function HomeScreen({ navigation }) {
 
       {/* ── Summary Cards ── */}
       <View style={styles.summaryRow}>
-        <SummaryCard title="Income"   amount={summary.totalIncome}   icon="arrow-down-circle" iconColor={colors.income}  bgColor={colors.incomeLight} />
-        <SummaryCard title="Expenses" amount={summary.totalExpenses} icon="arrow-up-circle"   iconColor={colors.expense} bgColor={colors.expenseLight} />
+        <SummaryCard title="Income" amount={summary.totalIncome} icon="arrow-down-circle" iconColor={colors.income} bgColor={colors.incomeLight} />
+        <SummaryCard title="Expenses" amount={summary.totalExpenses} icon="arrow-up-circle" iconColor={colors.expense} bgColor={colors.expenseLight} />
       </View>
 
       {/* ── 7-Day Chart ── */}
